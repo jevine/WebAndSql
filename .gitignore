@@ -1,0 +1,16 @@
+### eclipse ###
+.settings
+.classpath
+.DS_Store
+.project
+bin
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+
+*.log
+target
