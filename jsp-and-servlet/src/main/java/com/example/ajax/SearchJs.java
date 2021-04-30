@@ -1,9 +1,14 @@
-package com.example.WebAndSql;
+package com.example.ajax;
+
+import WebAndSql.DbHelper;
+import WebAndSql.Student;
+import com.alibaba.fastjson.JSON;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,10 +19,14 @@ import java.util.List;
  * @author glodon
  */
 
-@WebServlet("/searchList")
-public class SearchList extends HttpServlet {
+@WebServlet("/ajax/searchList")
+public class SearchJs extends HttpServlet {
+
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
+        response.setContentType("text/html;charset=UTF-8");
+        response.setHeader("Cache-Control", "no-store");
+
         String sql = "select * from webconsql";
         String name = request.getParameter("ID");
         if (name != null && !"".equals(name)) {
@@ -31,6 +40,7 @@ public class SearchList extends HttpServlet {
             preparedStatement = con.prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Student> list = new ArrayList<>();
+
             while (resultSet.next()) {
                 Student student = new Student();
                 student.setStudent_id(resultSet.getInt("student_id"));
@@ -40,8 +50,11 @@ public class SearchList extends HttpServlet {
                 student.setSex(resultSet.getBoolean("sex"));
                 list.add(student);
             }
-            request.setAttribute("students", list);
-            request.getRequestDispatcher("list.jsp").forward(request, response);
+
+            String string=JSON.toJSONStringWithDateFormat(list, "yyyy-MM-dd");
+            PrintWriter out=response.getWriter();
+            out.println(string);
+
 
         } catch (Exception sqlException) {
             sqlException.printStackTrace();
@@ -57,3 +70,4 @@ public class SearchList extends HttpServlet {
 
 
 }
+

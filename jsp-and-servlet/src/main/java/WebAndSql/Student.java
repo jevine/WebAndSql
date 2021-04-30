@@ -1,4 +1,4 @@
-package com.example.WebAndSql;
+package WebAndSql;
 
 import java.io.Serializable;
 import java.util.Date;

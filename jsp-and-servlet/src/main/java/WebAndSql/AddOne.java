@@ -1,4 +1,4 @@
-package com.example.WebAndSql;
+package WebAndSql;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -69,5 +69,4 @@ public class AddOne extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
         doGet(request, response);
     }
-
 }

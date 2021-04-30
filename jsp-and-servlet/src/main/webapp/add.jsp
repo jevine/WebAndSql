@@ -12,7 +12,7 @@
     <title>Title</title>
 </head>
 <body>
-<form action="add" method="get">
+<form action="add" method="post">
     姓名：<input type="text" name="name">
     <br/>
     地区: <input type="text" name="area">

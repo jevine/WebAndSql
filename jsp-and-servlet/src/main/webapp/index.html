@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据的增删改查</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<body>
+<table border="1">
+    <thead>
+    <tr>
+        <td>姓名</td>
+        <td>地区</td>
+        <td>生日</td>
+        <td>Id</td>
+        <td> 是否女性</td>
+        <td>delete</td>
+        <td>update</td>
+    </tr>
+    </thead>
+
+    <tbody id="tb"></tbody>
+    <thead>
+    <tr>
+        <td>
+            <input type="text" id="searchOne" oninput="value=value.replace(/[^\d]/g,'')">
+            <input type="button" id="searchB" value="按id查询">
+        </td>
+        <td>
+            <input type="button" id="addStudent" value="增加一个成员(id不允许重复)">
+        </td>
+        <td>
+            <input type="button" id="searchAll" value="查询全部">
+        </td>
+    </tr>
+    </thead>
+</table>
+<table>
+    <p id="addForm" hidden="hidden">
+        ID:<input type="number" id="addId" >
+        姓名：<input type="text" id="name">
+        性别：<select id="sex" >
+        <option value="true">女</option>
+        <option value="false">男</option>
+         </select>
+        出生：<input type="date" id="birth"><br>
+        地区：<input type="text" id="area">
+        <input type="button" id="sureAdd" value="提交">
+        <input type="button" id="escAdd" value="取消">
+    </p>
+</table>
+
+<script type="text/javascript">
+    let a1 = function () {
+        $.get("ajax/searchList",
+            {ID: $("#searchOne").val()}, function (date) {
+                let str = "";
+                //console.log(temp);
+                let temp = JSON.parse(date);
+                for (let i = 0; i < temp.length; i++) {
+                    str += '<tr>';
+                    str += `<td>${temp[i].name}</td>`;
+                    str += `<td>${temp[i].area}</td>`;
+                    str += `<td>${temp[i].birth}</td>`;
+                    str += `<td>${temp[i].student_id}</td>`;
+                    str += `<td>${temp[i].sex}</td>`;
+                    str += `<td><input type="button"  value="删除本条" onclick="deleteOne(${temp[i].student_id})"></td>`;
+                    /*str += `<td><a href="deleteOneJs?id=${temp[i].student_id}" >删除本条</a></td>`;*/
+                    str += `<td><input type="button"  value="更新本条" onclick="toUpdateOne(${temp[i].student_id})"></td>`;
+                    str += '</tr>';
+                }
+                $("#tb").html(str);
+            }
+        )
+    }
+    let deleteOne = function (id) {
+        $.get("deleteOneJs", {ID: id}, a1);
+    }
+    let toUpdateOne = function (id) {
+        $("#addForm").show();
+        $.get("ajax/searchList", {ID: id},
+            function (data) {
+                let date1 = JSON.parse(data);
+                console.log(date1);
+                $("#escAdd").click(function () {
+                    $("#addForm").hide();
+                });
+                $("#addId").val(date1[0].student_id).attr("readonly", true);
+                $("#name").val(date1[0].name);
+                let temp="false";
+                if (date1[0].sex)
+                    temp="true"
+                $("#sex").val(temp);
+                console.log($("#sex").val());
+                $("#area").val(date1[0].area);
+                $("#birth").val(date1[0].birth);
+                $("#sureAdd").click(
+                    function (){
+                       // console.log(date1[0].birth);
+                        toSubmit("upDateJs")
+                    })
+            });
+    }
+    let toSubmit = function (url) {
+        $.get(url, {
+                addId: $("#addId").val(), name: $("#name").val(), sex: $("#sex").val(),
+                area: $("#area").val(), birth: $("#birth").val()
+            }, function () {
+                a1();
+                $("#addForm").hide();
+            }
+        );
+    }
+    $(function () {
+        a1();
+        $("#searchAll").click(function () {
+            $("#searchOne").val("");
+            a1();
+        });
+        $("#searchB").click(a1)
+        $("#addStudent").click(function () {
+            $("#addId").val("").attr("readonly", false);
+            $("#name").val("");
+            $("#sex").val("");
+            $("#area").val("");
+            $("#birth").val("");
+            $("#addForm").show();
+            $("#escAdd").click(function () {
+                $("#addForm").hide();
+            });
+            $("#sureAdd").click(function () {
+                let temp = $("#addId").val() === "" || $("#name").val() === "" || $("#area").val() === "" || $("#sex").val() === "" || $("#birth").val() === "";
+                if (temp) {
+                    alert("填写完整");
+                } else {
+                    toSubmit("addOneJs");
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

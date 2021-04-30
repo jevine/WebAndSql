@@ -9,6 +9,5 @@
 </h1>
 <br/>
 <a href="searchList">use mysql</a>
-<a href="search.jsp">hhh</a>>
 </body>
 </html>

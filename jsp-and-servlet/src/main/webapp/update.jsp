@@ -1,4 +1,4 @@
-<%@ page import="com.example.WebAndSql.Student" %>
+<%@ page import="WebAndSql.Student" %>
 <%@ page import="java.sql.Date" %>
 <%--
   Created by IntelliJ IDEA.
